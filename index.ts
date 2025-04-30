@@ -3,7 +3,7 @@ import { Block } from "ethers"; // Explicitly import Block type if needed later,
 
 // --- Configuration ---
 // IMPORTANT: Replace with your actual BSC RPC URL (consider using environment variables for security)
-const BSC_RPC_URL = process.env.BSC_RPC_URL || "YOUR_BSC_RPC_URL";
+const BSC_RPC_URL = process.env.BSC_RPC_URL || "https://bsc-dataseed.bnbchain.org";
 const TARGET_SPENDER_ADDRESS = ethers.getAddress("0xb300000b72deaeb607a12d5f54773d1c19c7028d"); // Use getAddress for checksum validation
 const APPROVE_FUNC_SIGNATURE = "approve(address,uint256)";
 const APPROVE_FUNC_SELECTOR = ethers.id(APPROVE_FUNC_SIGNATURE).substring(0, 10); // Calculates "0x095ea7b3"
@@ -114,7 +114,8 @@ async function scanRecentApprovals() {
     for (const tokenAddr of foundTokens) {
       try {
         const contract = new ethers.Contract(tokenAddr, BEP20_ABI, provider);
-        const tokenName = await contract.name();
+        const tokenNameCall = contract.name as () => Promise<string>;
+        const tokenName = await tokenNameCall();
         console.log(`  - Token Address: ${tokenAddr}, Name: ${tokenName}`);
         results.push({ address: tokenAddr, name: tokenName });
       } catch (e: any) {
