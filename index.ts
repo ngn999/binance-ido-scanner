@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { Block } from "ethers"; // Explicitly import Block type if needed later, provider methods often return it
+import type { Block } from "ethers"; // Explicitly import Block type if needed later, provider methods often return it
 
 // --- Configuration ---
 // IMPORTANT: Replace with your actual BSC RPC URL (consider using environment variables for security)
