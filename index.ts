@@ -146,10 +146,20 @@ async function scanRecentApprovals() {
 				const tokenName = await tokenNameCall();
 				console.log(`  - Token Address: ${tokenAddr}, Name: ${tokenName}`);
 				results.push({ address: tokenAddr, name: tokenName });
-			} catch (e: any) {
+			} catch (e: unknown) {
+				// Try to extract message if e is an object and has a 'message' property
+				const potentialMessage =
+					typeof e === "object" && e !== null && "message" in e
+						? (e as { message?: unknown }).message // Access the message property
+						: undefined; // Indicate message property doesn't exist or e is not an object
+
+				// Use potentialMessage if it's not null/undefined, otherwise fallback to e itself.
+				// Then convert the result to a string for logging.
+				const displayError = String(potentialMessage ?? e);
 				console.log(
-					`  - Token Address: ${tokenAddr}, Name: <Could not fetch name - Error: ${e?.message ?? e}>`,
+					`  - Token Address: ${tokenAddr}, Name: <Could not fetch name - Error: ${displayError}>`,
 				);
+
 				results.push({ address: tokenAddr, name: "<Error fetching name>" });
 			}
 		}
